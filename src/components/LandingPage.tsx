@@ -14,6 +14,19 @@ import {
 } from 'lucide-react';
 import Footer from './Footer';
 
+/** Practical email shape: local@domain.tld (no spaces, has TLD segment). */
+const EMAIL_PATTERN =
+  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
+
+/** Formats up to 10 digits as (555) 555-5555 while typing. */
+function formatUsPhoneDigits(raw: string): string {
+  const digits = raw.replace(/\D/g, '').slice(0, 10);
+  if (digits.length === 0) return '';
+  if (digits.length <= 3) return `(${digits}`;
+  if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+}
+
 const IntakeForm: React.FC = () => {
   const [form, setForm] = useState({
     name: '',
@@ -31,6 +44,13 @@ const IntakeForm: React.FC = () => {
 
   const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzCjvbe12lNQhS7Xwus-aJDeQYvRexlRiQ_Yr2TcNCxkzG8TW-in59zCqj8VO3S4jdj/exec';
 
+  const phoneDigits = form.phone.replace(/\D/g, '');
+  const emailTrimmed = form.email.trim();
+  const nameOk = form.name.trim().length > 0;
+  const emailOk = EMAIL_PATTERN.test(emailTrimmed);
+  const phoneOk = phoneDigits.length === 10;
+  const canSubmit = form.consent && nameOk && emailOk && phoneOk && !submitting;
+
   useEffect(() => {
     if (submitted && successRef.current) {
       successRef.current.focus();
@@ -38,22 +58,38 @@ const IntakeForm: React.FC = () => {
   }, [submitted]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setError('');
     const { name, value, type, checked } = e.target;
     setForm(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
   };
 
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setError('');
+    setForm(prev => ({ ...prev, phone: formatUsPhoneDigits(e.target.value) }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!form.consent || !nameOk || !emailOk || !phoneOk) {
+      setError('Please complete your name, a valid email, and a full 10-digit phone number, and accept the consent.');
+      return;
+    }
     setSubmitting(true);
     setError('');
     try {
+      const payload = {
+        ...form,
+        name: form.name.trim(),
+        email: emailTrimmed,
+        phone: form.phone,
+      };
       // Use text/plain (not application/json) so the browser skips CORS preflight.
       // Google Apps Script still receives the body in doPost as e.postData.contents.
       const response = await fetch(SHEET_URL, {
         method: 'POST',
         mode: 'cors',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
@@ -111,31 +147,84 @@ const IntakeForm: React.FC = () => {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-8" noValidate>
-                {[
-                  { label: 'Full Name', name: 'name', type: 'text', placeholder: 'Jane Smith', autocomplete: 'name' },
-                  { label: 'Email', name: 'email', type: 'email', placeholder: 'jane@brokerage.com', autocomplete: 'email' },
-                  { label: 'Phone Number', name: 'phone', type: 'tel', placeholder: '(555) 000-0000', autocomplete: 'tel' },
-                  { label: 'Company / Brokerage', name: 'company', type: 'text', placeholder: 'Smith Realty Group', autocomplete: 'organization' },
-                  { label: 'Title', name: 'title', type: 'text', placeholder: 'Realtor, Broker, Loan Officer…', autocomplete: 'organization-title' },
-                ].map(field => (
+                {(
+                  [
+                    {
+                      label: 'Full Name',
+                      name: 'name' as const,
+                      type: 'text',
+                      placeholder: 'Jane Smith',
+                      autocomplete: 'name',
+                      required: true,
+                    },
+                    {
+                      label: 'Email',
+                      name: 'email' as const,
+                      type: 'email',
+                      placeholder: 'jane@brokerage.com',
+                      autocomplete: 'email',
+                      required: true,
+                    },
+                    {
+                      label: 'Phone Number',
+                      name: 'phone' as const,
+                      type: 'tel',
+                      placeholder: '(555) 555-5555',
+                      autocomplete: 'tel',
+                      required: true,
+                    },
+                    {
+                      label: 'Company / Brokerage',
+                      name: 'company' as const,
+                      type: 'text',
+                      placeholder: 'Smith Realty Group',
+                      autocomplete: 'organization',
+                      required: false,
+                    },
+                    {
+                      label: 'Title',
+                      name: 'title' as const,
+                      type: 'text',
+                      placeholder: 'Realtor, Broker, Loan Officer…',
+                      autocomplete: 'organization-title',
+                      required: false,
+                    },
+                  ] as const
+                ).map(field => (
                   <div key={field.name} className={field.name === 'title' ? 'sm:col-span-2' : ''}>
                     <label
                       htmlFor={`intake-${field.name}`}
                       className="block text-xs font-black uppercase tracking-[0.25em] text-brand-dracula mb-3"
                     >
-                      {field.label} <span aria-hidden="true" className="text-brand-mint">*</span>
+                      {field.label}{' '}
+                      {field.required ? (
+                        <span aria-hidden="true" className="text-brand-mint">
+                          *
+                        </span>
+                      ) : (
+                        <span className="text-stone-400 font-bold normal-case tracking-normal text-[10px]"> (optional)</span>
+                      )}
                     </label>
                     <input
                       id={`intake-${field.name}`}
-                      required
-                      aria-required="true"
+                      required={field.required}
+                      aria-required={field.required ? 'true' : 'false'}
                       type={field.type}
                       name={field.name}
-                      value={form[field.name as keyof typeof form] as string}
-                      onChange={handleChange}
+                      value={form[field.name]}
+                      onChange={field.name === 'phone' ? handlePhoneChange : handleChange}
                       placeholder={field.placeholder}
                       autoComplete={field.autocomplete}
-                      className="w-full bg-stone-50 border border-stone-300 rounded-2xl px-6 py-4 text-brand-dracula text-sm font-bold placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-brand-mint focus:border-transparent transition-all"
+                      inputMode={field.name === 'phone' ? 'numeric' : undefined}
+                      maxLength={field.name === 'phone' ? 14 : undefined}
+                      aria-invalid={
+                        field.name === 'email'
+                          ? emailTrimmed.length > 0 && !emailOk
+                          : field.name === 'phone'
+                            ? phoneDigits.length > 0 && !phoneOk
+                            : undefined
+                      }
+                      className="w-full bg-stone-50 border border-stone-300 rounded-2xl px-6 py-4 text-brand-dracula text-sm font-bold placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-brand-mint focus:border-transparent transition-all aria-invalid:border-red-400 aria-invalid:focus:ring-red-400/40"
                     />
                   </div>
                 ))}
@@ -198,16 +287,18 @@ const IntakeForm: React.FC = () => {
                 <div className="sm:col-span-2 pt-2">
                   <button
                     type="submit"
-                    disabled={!form.consent || submitting}
-                    aria-disabled={!form.consent || submitting}
+                    disabled={!canSubmit}
+                    aria-disabled={!canSubmit}
                     aria-busy={submitting}
                     className="w-full py-6 bg-brand-dracula text-white rounded-2xl font-black text-[11px] uppercase tracking-[0.4em] transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed hover:enabled:bg-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-mint focus-visible:ring-offset-2"
                   >
                     {submitting ? 'SUBMITTING…' : 'REQUEST EARLY ACCESS'}
                   </button>
-                  {!form.consent && !submitting && (
+                  {!canSubmit && !submitting && (
                     <p className="text-xs text-stone-500 font-bold text-center mt-4">
-                      Please check the consent box above to continue.
+                      {!form.consent
+                        ? 'Please check the consent box above to continue.'
+                        : 'Enter your full name, a valid email, and a complete 10-digit U.S. phone number.'}
                     </p>
                   )}
                   {error && (
