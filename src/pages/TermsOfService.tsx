@@ -112,8 +112,8 @@ const TermsOfService: React.FC = () => (
         <p>
           <strong className="text-brand-dracula">Right to opt out:</strong> You may opt out of this arbitration agreement
           by emailing us within thirty (30) days of first accepting these Terms at{' '}
-          <a className="text-brand-mint underline underline-offset-2 hover:opacity-80" href="mailto:legal@imagere.com">
-            legal@imagere.com
+          <a className="text-brand-mint underline underline-offset-2 hover:opacity-80" href="mailto:imagerewebapp@gmail.com">
+            imagerewebapp@gmail.com
           </a>{' '}
           with “Arbitration Opt-Out” in the subject line and your name and mailing address in the body.
         </p>
@@ -133,8 +133,8 @@ const TermsOfService: React.FC = () => (
       <Block title="Contact">
         <p>
           Questions about these Terms:{' '}
-          <a className="text-brand-mint underline underline-offset-2 hover:opacity-80" href="mailto:legal@imagere.com">
-            legal@imagere.com
+          <a className="text-brand-mint underline underline-offset-2 hover:opacity-80" href="mailto:imagerewebapp@gmail.com">
+            imagerewebapp@gmail.com
           </a>
         </p>
       </Block>

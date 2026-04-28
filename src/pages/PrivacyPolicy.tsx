@@ -34,8 +34,8 @@ const PrivacyPolicy: React.FC = () => (
         </p>
         <p>
           <strong className="text-brand-dracula">Contact for privacy requests (including California rights):</strong>{' '}
-          <a className="text-brand-mint underline underline-offset-2 hover:opacity-80" href="mailto:privacy@imagere.com">
-            privacy@imagere.com
+          <a className="text-brand-mint underline underline-offset-2 hover:opacity-80" href="mailto:imagerewebapp@gmail.com">
+            imagerewebapp@gmail.com
           </a>
           .
         </p>
@@ -183,8 +183,8 @@ const PrivacyPolicy: React.FC = () => (
           </li>
           <li>
             Email{' '}
-            <a className="text-brand-mint underline underline-offset-2 hover:opacity-80" href="mailto:privacy@imagere.com">
-              privacy@imagere.com
+            <a className="text-brand-mint underline underline-offset-2 hover:opacity-80" href="mailto:imagerewebapp@gmail.com">
+              imagerewebapp@gmail.com
             </a>{' '}
             with “CPRA Opt-Out” in the subject line.
           </li>
