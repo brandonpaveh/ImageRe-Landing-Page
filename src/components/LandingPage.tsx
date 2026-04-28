@@ -607,7 +607,7 @@ const LandingPage: React.FC = () => {
                     },
                     {
                       step: '03',
-                      title: 'SEND IT LIVE',
+                      title: 'POST IT INSTANTLY',
                       desc: 'Review the post and send it to your socials instantly, or schedule it for later.',
                     },
                   ].map((item, idx) => (
