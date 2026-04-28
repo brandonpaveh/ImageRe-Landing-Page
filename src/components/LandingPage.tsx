@@ -194,16 +194,14 @@ const IntakeForm: React.FC = () => {
                   <div key={field.name} className={field.name === 'title' ? 'sm:col-span-2' : ''}>
                     <label
                       htmlFor={`intake-${field.name}`}
-                      className="block text-xs font-black uppercase tracking-[0.25em] text-brand-dracula mb-3"
+                      className="block text-xs font-black uppercase tracking-[0.25em] text-brand-dracula mb-2 leading-snug"
                     >
-                      {field.label}{' '}
+                      {field.label}
                       {field.required ? (
-                        <span aria-hidden="true" className="text-brand-mint">
+                        <span aria-hidden="true" className="text-brand-mint ml-1.5 font-black">
                           *
                         </span>
-                      ) : (
-                        <span className="text-stone-400 font-bold normal-case tracking-normal text-[10px]"> (optional)</span>
-                      )}
+                      ) : null}
                     </label>
                     <input
                       id={`intake-${field.name}`}
