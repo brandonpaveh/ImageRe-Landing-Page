@@ -50,6 +50,10 @@ const Footer: React.FC = () => (
         California residents: See our Privacy Policy for CPRA rights, Global Privacy Control (GPC), and how to opt out
         of the sale or sharing of personal information.
       </p>
+      <p className="text-[10px] font-bold text-white/45 text-center max-w-3xl mx-auto leading-relaxed border-t border-white/10 pt-10">
+        AI transparency: This page does not include a live generative AI chatbot. References to AI describe our planned
+        product experience once available.
+      </p>
     </div>
   </footer>
 );

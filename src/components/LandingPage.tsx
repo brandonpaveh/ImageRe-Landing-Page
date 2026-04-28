@@ -430,10 +430,6 @@ const LandingPage: React.FC = () => {
                   Stop worrying about what to post. One simple idea generates your entire social
                   media calendar, video tours, and staging in seconds.
                 </p>
-                <p className="text-xs font-bold text-stone-500 mb-8 leading-relaxed max-w-xl mx-auto lg:mx-0 border-l-4 border-brand-mint/60 pl-4">
-                  AI transparency: This page does not include a live generative AI chatbot. References to AI describe our
-                  planned product experience once available.
-                </p>
 
                 <div className="flex flex-col sm:flex-row items-center gap-8 justify-center lg:justify-start">
                   <span className="px-12 py-7 text-stone-500 font-black text-[11px] uppercase tracking-widest" aria-label="Coming soon">
