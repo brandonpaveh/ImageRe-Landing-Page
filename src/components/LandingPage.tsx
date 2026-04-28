@@ -114,7 +114,7 @@ const IntakeForm: React.FC = () => {
 
         <div className="text-center mb-16">
           <p className="text-[11px] font-black uppercase tracking-[0.4em] text-white/70 mb-10">
-            EARLY ACCESS
+            COMING SOON
           </p>
           <h2
             id="intake-heading"
@@ -374,9 +374,12 @@ const LandingPage: React.FC = () => {
             </div>
 
             <div className="hidden lg:flex items-center gap-8">
-              <span className="px-10 py-4 text-[11px] font-black uppercase tracking-widest text-stone-500" aria-label="Coming soon">
-                COMING SOON
-              </span>
+              <a
+                href="#intake-heading"
+                className="px-10 py-4 text-[11px] font-black uppercase tracking-widest text-white bg-brand-dracula rounded-2xl hover:bg-black transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-mint focus-visible:ring-offset-2"
+              >
+                Get Early Access
+              </a>
             </div>
 
             <button
@@ -403,7 +406,13 @@ const LandingPage: React.FC = () => {
               <a href="#workflow" onClick={() => setMobileMenuOpen(false)} className="block text-[11px] font-black uppercase tracking-widest text-stone-700 hover:text-brand-dracula transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-mint rounded">HOW IT WORKS</a>
               <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="block text-[11px] font-black uppercase tracking-widest text-stone-700 hover:text-brand-dracula transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-mint rounded">PRICING</a>
               <div className="pt-4 border-t border-stone-100">
-                <span className="text-[11px] font-black uppercase tracking-widest text-stone-500">COMING SOON</span>
+                <a
+                  href="#intake-heading"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block text-[11px] font-black uppercase tracking-widest text-brand-dracula hover:text-black transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-mint rounded"
+                >
+                  GET EARLY ACCESS
+                </a>
               </div>
             </div>
           )}
@@ -427,8 +436,8 @@ const LandingPage: React.FC = () => {
                   </span>
                 </h1>
                 <p className="text-base text-stone-600 mb-12 leading-relaxed max-w-xl mx-auto lg:mx-0 font-bold">
-                  Stop worrying about what to post. One simple idea generates your entire social
-                  media calendar, video tours, and staging in seconds.
+                  Turn one prompt into branded posts and a smart social calendar, with additional AI
+                  tools rolling out as we launch.
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center gap-8 justify-center lg:justify-start">
